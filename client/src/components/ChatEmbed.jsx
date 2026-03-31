@@ -86,7 +86,10 @@ export default function ChatEmbed() {
     setLoading(true)
 
     try {
-      const res = await fetch('/chat', {
+      const apiUrl = import.meta.env.VITE_API_URL
+        ? `${import.meta.env.VITE_API_URL}/chat`
+        : '/chat'
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: nextMessages }),
