@@ -6,7 +6,25 @@ import { retrieve } from './rag/retriever.mjs'
 const app = express()
 app.use(express.json())
 
+// Allow requests from any Vercel deployment (and localhost for dev)
+app.use((req, res, next) => {
+  const origin = req.headers.origin || ''
+  if (
+    origin.endsWith('.vercel.app') ||
+    origin.startsWith('https://rayanmalek') ||
+    origin.startsWith('http://localhost')
+  ) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204)
+  next()
+})
+
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+app.get('/health', (req, res) => res.json({ ok: true }))
 
 app.post('/chat', async (req, res) => {
   const { messages } = req.body
@@ -63,7 +81,7 @@ ${context}`
   }
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
 })
