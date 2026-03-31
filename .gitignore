@@ -1,6 +1,6 @@
 node_modules/
-package.json
-package-lock.json
-capture-screenshots.mjs
-memory/
-CLAUDE.md
+client/node_modules/
+client/dist/
+.env
+.DS_Store
+temporary screenshots/
